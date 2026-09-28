@@ -59,7 +59,11 @@ const createEmptyAccount = (): Account => ({
 export function PipelineSection() {
   const [customer, setCustomer] = useState({
     name: "",
+    companyName: "",
     phone: "",
+    alternatePhone: "",
+    aadhaar: "",
+    pan: "",
     username: "",
     password: "",
   });
@@ -129,6 +133,33 @@ export function PipelineSection() {
     if (!/^\d{10}$/.test(customer.phone)) {
       nextErrors.push(
         "Phone number must contain exactly 10 digits."
+      );
+    }
+
+    if (
+      customer.alternatePhone &&
+      !/^\d{10}$/.test(customer.alternatePhone)
+    ) {
+      nextErrors.push(
+        "Alternate phone number must contain exactly 10 digits."
+      );
+    }
+
+    if (
+      customer.aadhaar &&
+      !/^\d{12}$/.test(customer.aadhaar)
+    ) {
+      nextErrors.push(
+        "Aadhaar number must contain exactly 12 digits."
+      );
+    }
+
+    if (
+      customer.pan &&
+      !/^[A-Z]{5}\d{4}[A-Z]$/.test(customer.pan)
+    ) {
+      nextErrors.push(
+        "PAN number must be in a valid format."
       );
     }
 
@@ -217,7 +248,8 @@ export function PipelineSection() {
     setErrors([]);
 
     setSuccess(
-      `${customer.name} was created successfully with ${accounts.length
+      `${customer.name} was created successfully with ${
+        accounts.length
       } account${accounts.length === 1 ? "" : "s"}.`
     );
   };
@@ -268,6 +300,7 @@ export function PipelineSection() {
 
               <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
 
+                {/* FULL NAME */}
                 <Field label="Full Name" required>
                   <Input
                     value={customer.name}
@@ -281,6 +314,21 @@ export function PipelineSection() {
                   />
                 </Field>
 
+                {/* COMPANY / BUSINESS NAME */}
+                <Field label="Nominee Name">
+                  <Input
+                    value={customer.companyName}
+                    onChange={(event) =>
+                      updateCustomer(
+                        "companyName",
+                        event.target.value
+                      )
+                    }
+                    placeholder="ABC Collection Agency"
+                  />
+                </Field>
+
+                {/* PHONE */}
                 <Field label="Phone Number" required>
                   <Input
                     inputMode="numeric"
@@ -299,6 +347,60 @@ export function PipelineSection() {
                   />
                 </Field>
 
+                {/* ALTERNATE PHONE */}
+                <Field label="Alternate Phone">
+                  <Input
+                    inputMode="numeric"
+                    maxLength={10}
+                    value={customer.alternatePhone}
+                    onChange={(event) =>
+                      updateCustomer(
+                        "alternatePhone",
+                        event.target.value.replace(
+                          /\D/g,
+                          ""
+                        )
+                      )
+                    }
+                    placeholder="9123456780"
+                  />
+                </Field>
+
+                {/* AADHAAR */}
+                <Field label="Aadhaar Number">
+                  <Input
+                    inputMode="numeric"
+                    maxLength={12}
+                    value={customer.aadhaar}
+                    onChange={(event) =>
+                      updateCustomer(
+                        "aadhaar",
+                        event.target.value.replace(
+                          /\D/g,
+                          ""
+                        )
+                      )
+                    }
+                    placeholder="12 digit Aadhaar"
+                  />
+                </Field>
+
+                {/* PAN */}
+                <Field label="PAN Number">
+                  <Input
+                    maxLength={10}
+                    value={customer.pan}
+                    onChange={(event) =>
+                      updateCustomer(
+                        "pan",
+                        event.target.value.toUpperCase()
+                      )
+                    }
+                    placeholder="ABCDE1234F"
+                  />
+                </Field>
+
+                {/* USERNAME */}
                 <Field label="Username" required>
                   <Input
                     value={customer.username}
@@ -312,6 +414,7 @@ export function PipelineSection() {
                   />
                 </Field>
 
+                {/* PASSWORD */}
                 <Field
                   label="Password"
                   required
@@ -455,6 +558,7 @@ function AccountCard({
       {/* ACCOUNT FIELDS */}
       <div className="grid gap-x-5 gap-y-5 sm:grid-cols-2 lg:grid-cols-3">
 
+        {/* ACCOUNT NUMBER */}
         <Field label="Account No." required>
           <Input
             value={account.accountNumber}
@@ -469,6 +573,7 @@ function AccountCard({
           />
         </Field>
 
+        {/* SCHEME */}
         <Field label="Scheme" required>
           <select
             value={account.scheme}
@@ -496,6 +601,7 @@ function AccountCard({
           </select>
         </Field>
 
+        {/* ACCOUNT NAME */}
         <Field label="Account Name">
           <Input
             value={account.accountName}
@@ -510,6 +616,7 @@ function AccountCard({
           />
         </Field>
 
+        {/* COLLECTION AMOUNT */}
         <Field
           label="Collection Amount"
           required
@@ -529,6 +636,7 @@ function AccountCard({
           />
         </Field>
 
+        {/* FREQUENCY */}
         <Field label="Frequency" required>
           <select
             value={account.frequency}
@@ -554,6 +662,7 @@ function AccountCard({
           </select>
         </Field>
 
+        {/* START DATE */}
         <Field label="Start Date" required>
           <Input
             type="date"
@@ -568,6 +677,7 @@ function AccountCard({
           />
         </Field>
 
+        {/* MATURITY DATE */}
         <Field label="Maturity Date" required>
           <Input
             type="date"
@@ -582,6 +692,7 @@ function AccountCard({
           />
         </Field>
 
+        {/* PREVIOUS PAID */}
         <Field
           label="Previous Paid"
           hint="Optional"
